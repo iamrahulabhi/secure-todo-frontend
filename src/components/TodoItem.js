@@ -1,9 +1,10 @@
-// src/components/TodoItem.js
+// src/components/TodoItem.jsx
+
 import React from 'react';
-import { ListItem, ListItemText, Checkbox, IconButton, Chip,Box } from '@mui/material';
+import { ListItem, ListItemText, Checkbox, IconButton, Chip, Box } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
-import { format } from 'date-fns';
+import { format } from 'date-fns'; // Library to format dates nicely
 
 const priorityColors = {
   High: 'error',
@@ -12,11 +13,13 @@ const priorityColors = {
 };
 
 export default function TodoItem({ todo, onToggleComplete, onDelete, onEdit }) {
+  // --- THIS IS THE KEY LOGIC ---
+  // It checks if a dueDate exists, then formats it into a readable string like "Aug 29, 2025".
   const formattedDate = todo.dueDate ? format(new Date(todo.dueDate), 'MMM dd, yyyy') : '';
 
   return (
-     <ListItem
-      sx={{ pr: '120px' }}
+    <ListItem
+      sx={{ pr: '120px' }} // Keeps the padding to prevent overlap
       disablePadding
     >
       <Checkbox
@@ -28,12 +31,12 @@ export default function TodoItem({ todo, onToggleComplete, onDelete, onEdit }) {
       <Box sx={{ flexGrow: 1, display: 'flex', alignItems: 'center' }}>
         <ListItemText
           primary={todo.text}
-          secondary={formattedDate}
+          // --- THE FORMATTED DATE IS DISPLAYED HERE ---
+          secondary={formattedDate} 
           sx={{ 
             textDecoration: todo.completed ? 'line-through' : 'none',
-            minWidth: '100px', // Give it a minimum width if needed
-            flexShrink: 1, // Allow text to shrink
-            mr: 1 
+            flexShrink: 1,
+            mr: 1
           }}
         />
         {todo.priority && (
@@ -41,12 +44,11 @@ export default function TodoItem({ todo, onToggleComplete, onDelete, onEdit }) {
             label={todo.priority} 
             color={priorityColors[todo.priority]} 
             size="small"
-            sx={{ flexShrink: 0 }} // Prevent chip from shrinking
+            sx={{ flexShrink: 0 }}
           />
         )}
       </Box>
 
-      {/* Secondary action for icons, position it absolutely */}
       <Box sx={{ position: 'absolute', right: 0 }}> 
           <IconButton edge="end" aria-label="edit" onClick={() => onEdit(todo)}>
             <EditIcon />

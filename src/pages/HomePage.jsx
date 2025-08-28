@@ -10,6 +10,7 @@ import FilterControls from '../components/FilterControls';
 import ThemeSwitcher from '../components/ThemeSwitcher';
 import SettingsIcon from '@mui/icons-material/Settings'; // <-- NEW: Import Settings icon
 import { Dialog, DialogTitle, DialogContent, DialogActions, IconButton } from '@mui/material'; // <-- NEW: Import Dialog components
+import VoiceCommandButton from '../components/VoiceCommandButton';
 
 
 export default function HomePage() {
@@ -92,6 +93,18 @@ export default function HomePage() {
     }
   }, [todos, filter]);
 
+  // --- NEW: Function to handle the result from the voice command ---
+  const handleVoiceResult = (transcript) => {
+  if (!transcript) return;
+  
+  console.log("Voice transcript received:", transcript);
+  
+  // Directly create a new task with the transcribed text.
+  // No AI, no parsing, no due dates or priorities from voice.
+  handleSaveTodo({ text: transcript });
+};
+
+
   return (
     <>
       <Container maxWidth="md" style={{ marginTop: '2rem' }}>
@@ -99,7 +112,9 @@ export default function HomePage() {
           
           <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
             <Typography variant="h4" component="h1">My Tasks ✅</Typography>
-            <Box>
+            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+              {/* --- ADD THE VOICE BUTTON HERE --- */}
+              <VoiceCommandButton onResult={handleVoiceResult} />
               <Button variant="contained" startIcon={<AddIcon />} onClick={() => handleOpenForm()} sx={{ mr: 1 }}>Add Task</Button>
               <Button variant="outlined" startIcon={<LogoutIcon />} onClick={handleLogout} sx={{ mr: 1 }}>Logout</Button>
               
@@ -117,8 +132,6 @@ export default function HomePage() {
           ) : (
             <TodoList todos={filteredTodos} onToggleComplete={handleToggleComplete} onDelete={handleDeleteTodo} onEdit={handleOpenForm} />
           )}
-
-          {/* --- REMOVED: The ThemeSwitcher is no longer here --- */}
         </Paper>
       </Container>
       

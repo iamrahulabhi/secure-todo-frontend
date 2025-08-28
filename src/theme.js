@@ -14,6 +14,10 @@ const palettes = {
     primary: { main: '#2e7d32' }, // A rich green
     secondary: { main: '#ffc107' }, // A warm amber
   },
+  forest: {
+    primary: { main: '#b11a60ff' }, // A rich green
+    secondary: { main: '#0a0a0aff' }, // A warm amber
+  },
 };
 
 // Define your font families

@@ -2,16 +2,17 @@ import React, { createContext, useState, useMemo, useContext } from 'react';
 import { ThemeProvider as MUIThemeProvider, CssBaseline, GlobalStyles } from '@mui/material';
 import { getTheme, fontOptions } from './theme';
 
-
 const ThemeContext = createContext();
 
 export const ThemeProvider = ({ children }) => {
-  // Get saved settings from localStorage or set defaults
   const [mode, setMode] = useState(localStorage.getItem('themeMode') || 'light');
   const [palette, setPalette] = useState(localStorage.getItem('themePalette') || 'default');
   const [font, setFont] = useState(localStorage.getItem('themeFont') || 'Roboto');
+  const [background, setBackground] = useState(localStorage.getItem('themeBackground') || 'default');
+  // --- NEW: Add state for paper background ---
+  const [paperBackground, setPaperBackground] = useState(localStorage.getItem('themePaperBackground') || 'default');
 
-  // Functions to update settings and save to localStorage
+
   const toggleColorMode = () => {
     const newMode = mode === 'light' ? 'dark' : 'light';
     setMode(newMode);
@@ -27,14 +28,26 @@ export const ThemeProvider = ({ children }) => {
     setFont(newFont);
     localStorage.setItem('themeFont', newFont);
   };
+  
+  const changeBackground = (newBackground) => {
+    setBackground(newBackground);
+    localStorage.setItem('themeBackground', newBackground);
+  };
 
-  // Re-create the theme only when settings change
-  const theme = useMemo(() => getTheme(mode, palette, font), [mode, palette, font]);
+  // --- NEW: Function to change paper background ---
+  const changePaperBackground = (newPaperBackground) => {
+    setPaperBackground(newPaperBackground);
+    localStorage.setItem('themePaperBackground', newPaperBackground);
+  };
+
+  // --- MODIFIED: Pass paperBackground to getTheme ---
+  const theme = useMemo(() => getTheme(mode, palette, font, background, paperBackground), [mode, palette, font, background, paperBackground]);
   
   const globalStyles = <GlobalStyles styles={{ body: { fontFamily: fontOptions[font] } }} />;
 
+  // --- MODIFIED: Pass new values to the context provider ---
   return (
-    <ThemeContext.Provider value={{ mode, toggleColorMode, changePalette, changeFont, palette, font }}>
+    <ThemeContext.Provider value={{ mode, toggleColorMode, changePalette, palette, changeFont, font, changeBackground, background, changePaperBackground, paperBackground }}>
       <MUIThemeProvider theme={theme}>
         <CssBaseline />
         {globalStyles}
@@ -44,5 +57,4 @@ export const ThemeProvider = ({ children }) => {
   );
 };
 
-// Custom hook to easily use the context
 export const useThemeContext = () => useContext(ThemeContext);

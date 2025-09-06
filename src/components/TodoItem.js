@@ -18,16 +18,17 @@ export default function TodoItem({ todo, onToggleComplete, onDelete, onEdit }) {
 
   return (
     <Box sx={{ borderBottom: '1px solid', borderColor: 'divider' }}>
-      <ListItem alignItems="flex-start" sx={{ pr: '96px' }} disablePadding>
+      <ListItem alignItems="center" sx={{ pr: '96px' }} disablePadding>
         <Checkbox
           edge="start"
           checked={todo.completed}
           onChange={() => onToggleComplete(todo)}
-          sx={{ pt: 1.5 }}
+          sx={{ pt: 1.5,ml:1,position: 'relative', zIndex: 1 ,alignItems: 'center'}}
+          
         />
-        <ListItemText
+        <ListItemText sx={{ ml: 1 }}
           primary={
-            <Typography sx={{ textDecoration: todo.completed ? 'line-through' : 'none', fontWeight: 500 }}>
+            <Typography sx={{ textDecoration: todo.completed ? 'line-through' : 'none', fontWeight: 500 ,ml:1,}}>
               {todo.text}
             </Typography>
           }
@@ -46,7 +47,7 @@ export default function TodoItem({ todo, onToggleComplete, onDelete, onEdit }) {
       {totalSubtasks > 0 && (
           <Box sx={{ display: 'flex', alignItems: 'center', pl: 7, pr: 2, pb: 1 }}>
               <LinearProgress variant="determinate" value={subtaskProgress} sx={{ width: '100%', mr: 2, height: 8, borderRadius: 4 }} />
-              <Typography variant="caption" color="text.secondary">{`${completedSubtasks}/${totalSubtasks}`}</Typography>
+              <Typography variant="caption" color="text.secondary" >{`${completedSubtasks}/${totalSubtasks}`}</Typography>
           </Box>
       )}
     </Box>

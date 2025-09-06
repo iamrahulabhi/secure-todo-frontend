@@ -70,19 +70,30 @@ export const getTheme = (mode, palette, font, background, paperBackground) => cr
   },
   // --- UPDATED with your specific CSS for the glass effect ---
   components: {
-    MuiPaper: {
-      styleOverrides: {
-        root: {
-          // Note: We use the dynamic background from your theme settings.
-          // The other styles are from your provided CSS.
-          backgroundColor: paperBackgrounds[paperBackground][mode],
-          borderRadius: '16px',
-          boxShadow: '0 4px 30px rgba(0, 0, 0, 0.1)',
-          backdropFilter: 'blur(5px)',
-          WebkitBackdropFilter: 'blur(5px)', // For Safari support
-          border: '1px solid rgba(255, 255, 255, 0.3)',
-        }
+  // Target only the AppBar
+  MuiAppBar: {
+    styleOverrides: {
+      root: {
+        borderRadius: 0,
+      }
+    }
+  },
+  // Target only the Drawer
+  MuiDrawer: {
+    styleOverrides: {
+      paper: { // For Drawer, you style the 'paper' slot
+        borderRadius: 0,
+      }
+    }
+  },
+  // Keep the rounded corners for other Paper components
+  MuiPaper: {
+    styleOverrides: {
+      root: {
+        borderRadius: '16px',
+        // ... other glassmorphism styles
       }
     }
   }
+}
 });

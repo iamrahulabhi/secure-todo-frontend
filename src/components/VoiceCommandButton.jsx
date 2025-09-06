@@ -1,9 +1,5 @@
-import React, { useState } from 'react';
-import { IconButton, Tooltip } from '@mui/material';
-import MicIcon from '@mui/icons-material/Mic';
-import MicOffIcon from '@mui/icons-material/MicOff';
+import React, { useState, useEffect } from 'react';
 
-// Check for browser support
 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 const mic = SpeechRecognition ? new SpeechRecognition() : null;
 
@@ -13,7 +9,7 @@ if (mic) {
   mic.lang = 'en-US';
 }
 
-export default function VoiceCommandButton({ onResult }) {
+export default function VoiceCommandButton({ onResult, children }) {
   const [isListening, setIsListening] = useState(false);
 
   const handleListen = () => {
@@ -24,41 +20,41 @@ export default function VoiceCommandButton({ onResult }) {
 
     if (isListening) {
       mic.stop();
-      setIsListening(false);
     } else {
       mic.start();
-      setIsListening(true);
     }
   };
 
-  if (mic) {
-    mic.onend = () => {
-      setIsListening(false);
-    };
+  useEffect(() => {
+    if (!mic) return;
 
-    mic.onresult = event => {
+    const handleOnResult = (event) => {
       const transcript = Array.from(event.results)
         .map(result => result[0])
         .map(result => result.transcript)
         .join('');
-      
-      onResult(transcript); // Send the final text back to the parent component
-      mic.stop();
+      onResult(transcript);
       setIsListening(false);
     };
 
-    mic.onerror = event => {
-      console.error(event.error);
-      mic.stop();
-      setIsListening(false);
-    };
-  }
+    const handleOnStart = () => setIsListening(true);
+    const handleOnEnd = () => setIsListening(false);
+    const handleOnError = (event) => console.error('Speech recognition error', event.error);
 
-  return (
-    <Tooltip title={isListening ? "Stop Listening" : "Add Task with Voice"}>
-      <IconButton onClick={handleListen} color={isListening ? "error" : "primary"}>
-        {isListening ? <MicOffIcon /> : <MicIcon />}
-      </IconButton>
-    </Tooltip>
-  );
+    mic.addEventListener('result', handleOnResult);
+    mic.addEventListener('start', handleOnStart);
+    mic.addEventListener('end', handleOnEnd);
+    mic.addEventListener('error', handleOnError);
+
+    // Cleanup function
+    return () => {
+      mic.removeEventListener('result', handleOnResult);
+      mic.removeEventListener('start', handleOnStart);
+      mic.removeEventListener('end', handleOnEnd);
+      mic.removeEventListener('error', handleOnError);
+    };
+  }, [onResult]);
+  
+  // Render whatever UI the parent component provides
+  return children(handleListen, isListening);
 }

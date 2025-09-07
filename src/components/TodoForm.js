@@ -58,7 +58,26 @@ export default function TodoForm({ open, onClose, onSave, todo }) {
   };
 
   const handleSave = () => {
-    onSave({ ...todo, text, description, tag, priority, dueDate, time, subtasks, notes });
+     const taskData = {
+      ...todo,
+      text,
+      description,
+      tag,
+      priority,
+      dueDate,
+      time,
+      subtasks,
+      notes,
+    };
+
+    // --- THIS IS THE FIX ---
+    // If it's a new task (the 'todo' prop will be null), add the current date as startDate.
+    // This ensures we don't overwrite the startDate every time we edit the task.
+    if (!todo) {
+      taskData.startDate = new Date().toISOString().split('T')[0]; // Format: "YYYY-MM-DD"
+    }
+
+    onSave(taskData); // Send the complete object to the backend
     onClose();
   };
 
@@ -83,8 +102,8 @@ export default function TodoForm({ open, onClose, onSave, todo }) {
             <Grid item xs={12} md={6}>
                  <FormControl fullWidth margin="normal">
                     <FormLabel>Tags</FormLabel>
-                    <Select variant="filled" hiddenLabel value={tag} onChange={(e) => setTag(e.target.value)}>
-                        <MenuItem value=""><em>None</em></MenuItem>
+                    <Select variant="filled" hiddenLabel value={tag} onChange={(e) => setTag(e.target.value)} displayEmpty>
+                        <MenuItem value=""><em>Done</em></MenuItem>
                         <MenuItem value="Work">Work</MenuItem>
                         <MenuItem value="Personal">Personal</MenuItem>
                         <MenuItem value="Urgent">Urgent</MenuItem>

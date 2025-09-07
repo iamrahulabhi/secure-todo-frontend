@@ -21,7 +21,8 @@ export default function TodoList({ todos, ...props }) {
       sx={{ 
         borderRadius: '12px', 
         overflow: 'hidden',  
-        mb: 1,               
+        mb: 1,  
+        width: '100%',             
 
         boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)', 
         border: '1px solid rgba(0, 0, 0, 0.12)',

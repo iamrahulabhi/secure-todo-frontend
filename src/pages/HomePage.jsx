@@ -250,22 +250,34 @@ export default function HomePage() {
         </List>
       </Drawer>
 
-      <Box component="main" sx={{ flexGrow: 1, p: 3, bgcolor: 'background.default' }}>
+      <Box 
+        component="main" 
+        sx={{ 
+          flexGrow: 1, 
+          p: 3, 
+          bgcolor: 'background.default',
+          display: 'flex',
+          flexDirection: 'column' 
+        }}
+      >
         <Toolbar />
-
-            <Box display="flex" justifyContent="space-between" alignItems="start" mb={2}>
-              <Typography variant="h4" sx={{ fontWeight: 700 }}>{pageTitle}</Typography>
-            </Box>
-            {loading ? (
-              <Box display="flex" justifyContent="start" my={4}><CircularProgress /></Box>
-            ) : (
-              <TodoList
-                todos={filteredTodos}
-                onToggleComplete={handleToggleComplete}
-                onDelete={handleDeleteTodo}
-                onEdit={handleOpenForm}
-              />
-            )}
+        <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+          <Typography variant="h4" sx={{ fontWeight: 700 }}>{pageTitle}</Typography>
+        </Box>
+        
+        {/* --- NEW: Scrollable container for the TodoList --- */}
+        <Box sx={{ flexGrow: 1, overflowY: 'auto', pr: 2 }}>
+          {loading ? (
+            <Box display="flex" justifyContent="center" my={4}><CircularProgress /></Box>
+          ) : (
+            <TodoList
+              todos={filteredTodos}
+              onToggleComplete={handleToggleComplete}
+              onDelete={handleDeleteTodo}
+              onEdit={handleOpenForm}
+            />
+          )}
+        </Box>
       </Box>
 
       <Box sx={{ position: "fixed", bottom: 32, right: 32, display: "flex", flexDirection: "column", gap: 2 }}>
